@@ -27,30 +27,25 @@ TEST_F(SQLiteStatementTest, testBindArguments) {
 }
 
 TEST_F(SQLiteStatementTest, testResetAndBindArguments) {
-	auto stmt = database->prepare("INSERT INTO Test VALUES (:first, 0.0, NULL, NULL)");
+	auto stmt = database->prepare("INSERT INTO Test VALUES (?, 0.0, NULL, NULL)");
 	stmt.bind(1, 1).execute();
 	stmt.reset();
 	stmt.bind(1, 2).execute();
 	EXPECT_EQ(2, database->execute("UPDATE Test SET second = 2.0"));
 }
 
-/*
-Statement:
-- done
-- execute
-- bind
-- getColumn
-- getBlob
+TEST_F(SQLiteStatementTest, testFetchRows) {
+	database->execute("INSERT INTO Test VALUES (1, 0.0, NULL, NULL)");
+	database->execute("INSERT INTO Test VALUES (2, 0.0, NULL, NULL)");
+	auto stmt = database->prepare(Constants::SELECT_ALL_DATA);
+	EXPECT_TRUE(stmt.fetch());
+	EXPECT_TRUE(stmt.fetch());
+	EXPECT_FALSE(stmt.fetch());
+}
 
-Column:
-- getBlob
-- getDouble
-- getInt
-- getInt64
-- getText
-
-Blob:
-- size
-- read
-- write
-*/
+TEST_F(SQLiteStatementTest, testGetColumnFailsWhenInvalidIndexGiven) {
+	database->execute(Constants::INSERT_DATA);
+	auto stmt = database->prepare(Constants::SELECT_ALL_DATA);
+	EXPECT_THROW(stmt.getColumn(100), std::runtime_error);
+	EXPECT_THROW(stmt.getColumn("unknown"), std::runtime_error);
+}

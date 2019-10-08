@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SQLiteColumn.cpp" />
     <ClCompile Include="SQLiteDatabase.cpp" />
     <ClCompile Include="SQLiteStatement.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SQLiteColumn.hpp" />
     <ClInclude Include="SQLiteDatabase.hpp" />
     <ClInclude Include="SQLiteStatement.hpp" />
   </ItemGroup>

@@ -21,12 +21,18 @@
     <ClCompile Include="SQLiteStatement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SQLiteColumn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SQLiteDatabase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SQLiteStatement.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SQLiteColumn.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

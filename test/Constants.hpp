@@ -9,6 +9,7 @@ namespace Constants {
 		"second DOUBLE, "
 		"third TEXT, "
 		"fourth BLOB)";
-	constexpr static const char* INSERT_DATA = "INSERT INTO Test VALUES (1, 2.0, 'three', 'four')";
+	constexpr static const char* INSERT_DATA = "INSERT INTO Test VALUES (1, 2.0, 'three', '³×¹øÂ°')";
 	constexpr static const char* INSERT_PREPARED_STMT = "INSERT INTO Test VALUES (:first, :second, :third, :fourth)";
+	constexpr static const char* SELECT_ALL_DATA = "SELECT * FROM Test";
 }

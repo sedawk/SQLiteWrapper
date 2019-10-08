@@ -8,10 +8,27 @@ namespace SQLite {
 
 	int Statement::execute() {
 		auto status = sqlite3_step(getStmt());
-		if (status == SQLITE_DONE || status == SQLITE_ROW) {
+		if (status == SQLITE_DONE) {
 			return sqlite3_changes(getDB());
 		}
-		throw std::runtime_error(sqlite3_errmsg(getDB()));
+		if (status == sqlite3_errcode(getDB())) {
+			throw std::runtime_error(sqlite3_errmsg(getDB()));
+		}
+		throw std::runtime_error(sqlite3_errstr(SQLITE_MISUSE));
+	}
+
+	bool Statement::fetch() {
+		auto status = sqlite3_step(getStmt());
+		if (status == SQLITE_ROW) {
+			return true;
+		}
+		if (status == SQLITE_DONE) {
+			return false;
+		}
+		if (status == sqlite3_errcode(getDB())) {
+			throw std::runtime_error(sqlite3_errmsg(getDB()));
+		}
+		throw std::runtime_error(sqlite3_errstr(SQLITE_MISUSE));
 	}
 
 	void Statement::reset() {
@@ -98,6 +115,22 @@ namespace SQLite {
 	Statement& Statement::bind(const std::string& name) {
 		auto index = sqlite3_bind_parameter_index(getStmt(), name.c_str());
 		return bind(index);
+	}
+
+	Column Statement::getColumn(const int index) {
+		if (index < 0 || sqlite3_column_count(getStmt()) < index) {
+			throw std::runtime_error(std::to_string(index) + ": index out of bounds");
+		}
+		return Column(getStmt(), index);
+	}
+
+	Column Statement::getColumn(const std::string& name) {
+		for (auto i = 0; i < sqlite3_column_count(getStmt()); i++) {
+			if (name == sqlite3_column_name(getStmt(), i)) {
+				return Column(getStmt(), i);
+			}
+		}
+		throw std::runtime_error(name + ": column name does not exist");
 	}
 
 	void Statement::checkReturn(int status) {
